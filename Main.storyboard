@@ -23,13 +23,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="4aD-UN-V4G">
-                                <rect key="frame" x="18" y="116" width="338" height="434"/>
+                                <rect key="frame" x="18" y="116.5" width="339" height="434"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="gZO-3i-pdU">
-                                        <rect key="frame" x="0.0" y="0.0" width="338" height="434"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="339" height="434"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="573-2f-JVz">
-                                                <rect key="frame" x="0.0" y="0.0" width="338" height="320"/>
+                                                <rect key="frame" x="0.5" y="0.0" width="338" height="320"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="5a1-EF-AtI">
                                                         <rect key="frame" x="0.0" y="0.0" width="338" height="30"/>
@@ -319,7 +319,7 @@
                                                 </subviews>
                                             </stackView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sva-rW-Mjo">
-                                                <rect key="frame" x="80" y="320" width="178" height="36"/>
+                                                <rect key="frame" x="80" y="320" width="179" height="36"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="Graphing Calculator">
                                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -329,7 +329,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4oL-Pj-qUb">
-                                                <rect key="frame" x="123.5" y="356" width="91" height="36"/>
+                                                <rect key="frame" x="124" y="356" width="91" height="36"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <state key="normal" title="Calculator">
                                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -339,14 +339,14 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s1D-ZN-528">
-                                                <rect key="frame" x="134.5" y="392" width="69" height="42"/>
+                                                <rect key="frame" x="135" y="392" width="69" height="42"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                                 <state key="normal" title="Graph">
                                                     <color key="titleColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="graph:" destination="BYZ-38-t0r" eventType="touchUpInside" id="fDN-yY-w2P"/>
+                                                    <action selector="graph:" destination="BYZ-38-t0r" eventType="touchUpInside" id="VLA-rQ-4vp"/>
                                                     <segue destination="fYA-ou-aoa" kind="showDetail" identifier="toGraph" id="7P8-jY-WhV"/>
                                                 </connections>
                                             </button>
@@ -386,12 +386,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lqh-ed-edW" customClass="graphController" customModule="Calculator" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lqh-ed-edW" customClass="graphController" customModule="Calculator">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="epZ-sX-Mid" appends="YES" id="hK9-uq-Fyz"/>
+                                    <outletCollection property="gestureRecognizers" destination="Lzo-4u-TNh" appends="YES" id="7zB-y5-4mF"/>
                                 </connections>
                             </view>
                         </subviews>
@@ -410,6 +411,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LHl-6E-vD0" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <pinchGestureRecognizer id="epZ-sX-Mid"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="Lzo-4u-TNh">
+                    <connections>
+                        <action selector="panGesture:" destination="fYA-ou-aoa" id="X22-nF-foP"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="894" y="666"/>
         </scene>
@@ -446,6 +452,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="qpn-ht-zj8"/>
+        <segue reference="7P8-jY-WhV"/>
     </inferredMetricsTieBreakers>
 </document>

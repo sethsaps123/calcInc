@@ -10,23 +10,29 @@ import UIKit
 
 class ViewController: UIViewController {
 
-
+    private var typedInGraphLabel : [String] = []
+    private var typingNumber = false
     var lastInput : String? = nil
     var toControlGraph = graphController()
     @IBAction func clear(_ sender: UIButton) {
+        typingNumber = false
         lastInput = nil
         displayLabel.text! = " "
         typedByUser = false
+        typedInGraphLabel.removeAll()
     }
     
+    //still have to fix typing number for this ****
     @IBAction func backspace(_ sender: UIButton) {
         if let text = displayLabel.text {
             displayLabel.text = String(text.characters.dropLast())
             lastInput = String(describing: text.characters.last)
+            typedInGraphLabel.remove(at: typedInGraphLabel.endIndex - 1)
         }
         if (displayLabel.text?.isEmpty)! {
             displayLabel.text = " "
         }
+        
     }
     
     @IBOutlet weak var displayLabel: UILabel!
@@ -36,20 +42,27 @@ class ViewController: UIViewController {
     private var model = CalculatorModel()
     
     @IBAction func graphCalc(_ sender: UIButton) {
+        typingNumber = false
         graphingMode = true
         displayLabel.text = " "
         lastInput = nil
+        typedInGraphLabel.removeAll()
     }
     
     @IBAction func calcCalc(_ sender: UIButton) {
+        typingNumber = false
         graphingMode = false
+        lastInput = nil
         displayLabel.text = " "
+        typedInGraphLabel.removeAll()
     }
     @IBAction func parenthesis(_ sender: UIButton) {
         if graphingMode {
+            typingNumber = false
             let nums = String(displayLabel.text!)
             displayLabel.text = nums! + sender.currentTitle!
             lastInput = sender.currentTitle
+            typedInGraphLabel.append(sender.currentTitle!)
         }
     }
    
@@ -82,39 +95,42 @@ class ViewController: UIViewController {
          if let identifier = segue.identifier {
              switch identifier {
              case "toGraph":
-                break
-                 if let vc = segue.destination as? graphController {
-                 //set things up for the graph here
-                    //toControlGraph.drawEquation()
- 
-                 }
+                let dest = segue.destination as? graphSuperController
+                dest?.functionToGraph = typedInGraphLabel
+                 break
                 
              default:
                 break
             }
          }
      }
-
- 
-    @IBAction func graph(_ sender: UIButton) {
-        let function : String = displayLabel.text!
-        model.function = function
-        print(model.performGraphOperation(X: 2))
-    }
   
+    @IBAction func graph(_ sender: UIButton) {
+    }
     
     @IBAction func PressButton(_ sender: UIButton) {
         let digit = sender.currentTitle!
-        if (typedByUser){
+        if (typedByUser && !graphingMode){
             let currentDisplayed = displayLabel.text!
             displayLabel.text = currentDisplayed + digit
             lastInput = digit
         }
         else{
-            displayLabel.text = digit
-            typedByUser = true
-            lastInput = digit
+            let currentDisplayed = displayLabel.text!
+            if (typingNumber) {
+                var num = typedInGraphLabel.last!
+                typedInGraphLabel.remove(at: typedInGraphLabel.endIndex - 1)
+                num += sender.currentTitle!
+                typedInGraphLabel.append(num)
+            }
+            else {
+                lastInput = sender.currentTitle!
+                typedInGraphLabel.append(sender.currentTitle!)
+            }
+            displayLabel.text = currentDisplayed + sender.currentTitle!
+            typingNumber = true
         }
+        
     }
     
     var DisplayOperations : Double{
@@ -141,6 +157,7 @@ class ViewController: UIViewController {
             }
         }
         else if graphingMode {
+            typingNumber = false
             if (sender.currentTitle! == "=") {
                 displayLabel.text = "ERROR"
                 lastInput = nil
@@ -148,9 +165,11 @@ class ViewController: UIViewController {
                 
             }
             else {
-                let currentDisplayed = displayLabel.text!
-                displayLabel.text = currentDisplayed + sender.currentTitle!
-                lastInput = sender.currentTitle!
+                let nums = String(displayLabel.text!)
+                displayLabel.text = nums! + sender.currentTitle!
+                typedByUser = true
+                lastInput = nums!
+                typedInGraphLabel.append(sender.currentTitle!)
             }
         }
     }

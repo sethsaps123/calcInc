@@ -11,14 +11,21 @@ import UIKit
 class graphController: UIView {
     
     
-    
     private var axes = AxesDrawer()
+    
+    var xVals : [Double] = []
+    var yVals : [Double] = [] {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     private var pt : CGPoint? = nil {
         didSet {
             setNeedsDisplay()
         }
     }
-    private var rectSize : CGSize? = nil {
+    var rectSize : CGSize? = nil {
         didSet {
             //call this built in function to tell to redraw
             setNeedsDisplay()
@@ -30,8 +37,21 @@ class graphController: UIView {
         }
     }
     
-    var graphSize : CGFloat = 5 {
+    private var scaleDueToPinching : Double = 5.0 {
         didSet {
+            if scaleDueToPinching < 2 {
+                scaleDueToPinching = 2
+            }
+            else if scaleDueToPinching > 12 {
+                scaleDueToPinching = 12
+            }
+            setNeedsDisplay()
+        }
+    }
+    
+    var moveDueToPanning : Double = 0.0 {
+        didSet {
+            
             setNeedsDisplay()
         }
     }
@@ -42,44 +62,30 @@ class graphController: UIView {
         rectSize = CGSize(width: bounds.width, height: bounds.height)
         rectangle = CGRect(origin: pt!, size: rectSize!)
         axes.color = UIColor.black
-        axes.drawAxes(in: rectangle!, origin: pt!, pointsPerUnit: graphSize)
-        print (graphSize)
-        //draw a line
-        //x is 100 / graphSize
-        //y is
-        let path = UIBezierPath()
+        axes.drawAxes(in: rectangle!, origin: pt!, pointsPerUnit: CGFloat(scaleDueToPinching))
         var counter = 0
-        //while counter < 50 {
-            //let yValue =
-           // let xValue = bounds.midX +
-                
-            path.move(to: (CGPoint(x: bounds.minX, y: bounds.midY + 100)))
-            path.addLine(to: CGPoint(x: bounds.maxX, y: bounds.midY + 100))
-            UIColor.black.setStroke()
-            path.stroke()
-       // }
+        let path = UIBezierPath()
+        while (counter < xVals.count - 1) {
+            path.move(to: (CGPoint(x: bounds.midX + CGFloat((xVals[counter] * scaleDueToPinching)), y: bounds.midY - CGFloat((yVals[counter] * scaleDueToPinching)))))
+            path.addLine(to: (CGPoint(x: bounds.midX + CGFloat((xVals[counter + 1] * scaleDueToPinching)), y: bounds.midY - CGFloat((yVals[counter + 1] * scaleDueToPinching)))))
+            counter += 1
+        }
+        UIColor.black.setStroke()
+        path.stroke()
     }
     
     func drawEquation() {
-        /*
-        let rectangle = CGRect(x: bounds.midX, y: bounds.midY, width: 20, height: 20)
-        let line = UIBezierPath(rect: rectangle)
-        UIColor.black.setStroke()
-        line.stroke()
-        setNeedsDisplay()
-         */
+
     }
     
     func pinchGest(byReactingTo pinchRec: UIPinchGestureRecognizer) {
         switch pinchRec.state {
         case .changed, .ended:
-                graphSize *= pinchRec.scale
-                pinchRec.scale = 1
+            scaleDueToPinching *= Double(pinchRec.scale)
+            pinchRec.scale = 1
         default:
             break
         }
     }
- 
-    
     
 }

@@ -86,24 +86,7 @@ struct CalculatorModel{
     
     var function : String? = nil {
         didSet {
-            let operation = CharacterSet(charactersIn: "+-×÷()")
-            var tempString : String = String(describing: function)
-            var counter = 0
-            let operand = "+-×÷()"
-            for char in tempString.characters {
-                if operand.contains(String(char)) {
-                    if (counter == 0) {
-                        
-                    }
-                    else if (counter == tempString.characters.count - 1) {
-                        
-                    }
-                    else {
-                        
-                    }
-                }
-            }
-            dividedString = function?.components(separatedBy: operation)
+            
         }
     }
     
@@ -171,103 +154,133 @@ struct CalculatorModel{
         }
     }
     
-    private func callAllOp(index : Int)->Double{
+    var functionToGraph : [String]? = nil
+    
+    struct pair {
+        var total : Double
+        var indexWentTill: Int
+    }
+    var yVals : [Double] = []
+    
+    var xVals : [Double] = [] {
+        didSet {
+            getYVals()
+        }
+    }
+    private mutating func getYVals() {
+        for x in xVals {
+            indexCurrentlyOn = -1
+            hitLast = false
+            currentXVal = x
+            yVals.append(performGraphOperation())
+        }
+    }
+    private var indexCurrentlyOn : Int = -1
+    private var currentXVal : Double? = nil
+    private var currentOpenPar : [Int] = []
+    private var hitClosedPar = false
+    private var hitLast = false
+    
+    mutating func performGraphOperation()->Double {
         var total : Double = 0
-        var counter = index
-        for variables in index..<(dividedString?.count)! {
-            let sign = String(describing: dividedString?[variables])
-            switch sign {
-                case "+":
-                    total += callAllOp(index: index + 1)
-                case "-":
-                    total -= callAllOp(index: index + 1)
-                case "×":
-                    total *= callAllOp(index: index + 1)
-                case "÷":
-                    total /= callAllOp(index: index + 1)
-                case "(":
+        var counter = 0
+        for variables in functionToGraph! {
+            switch variables {
+            case "+":
+                if counter <= indexCurrentlyOn {
                     break
-                case ")":
+                }
+                indexCurrentlyOn = counter
+                total += performGraphOperation()
+                if hitClosedPar {
                     return total
-                /*case "sin":
-                    
-                case "cos":
-                    
-                case "tan":
-                    
-                case "√":
-                    */
-                default:
-                    total += Double(sign)!
+                }
+            case "-":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total -= performGraphOperation()
+                if hitClosedPar {
+                    return total
+                }
+                
+            case "×":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total *= performGraphOperation()
+                if hitClosedPar {
+                    return total
+                }
+            case "÷":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total /= performGraphOperation()
+                if hitClosedPar {
+                    return total
+                }
+            case "(":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total += performGraphOperation()
+                hitClosedPar = false
+                break
+            case ")":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                hitClosedPar = true
+                return total
+            case "sin":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total = sin(performGraphOperation())
+                
+            case "cos":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total = cos(performGraphOperation())
+            case "tan":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total = tan(performGraphOperation())
+            case "√":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                indexCurrentlyOn = counter
+                total = sqrt(performGraphOperation())
+            case "X":
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                total += currentXVal!
+            default:
+                if counter <= indexCurrentlyOn {
+                    break
+                }
+                total += Double(variables)!
             }
             counter += 1
+            if hitLast {
+                return total
+            }
         }
+        hitLast = true
+        
         return total
     }
-    
-    mutating func performGraphOperation(X : Double)->Double {
-        let stringForm : String = String(X)
-        function = function?.replacingOccurrences(of: "X", with: stringForm)
-        /*
-        var lastOpenPar : Int? = nil
-        var counter = 0
-        while (newEquation.contains("(")) {
-            for char in newEquation.characters {
-                if char == "(" {
-                    lastOpenPar = counter
-                }
-                counter += 1
-            }
-            counter = 0
-            if lastOpenPar != nil {
-                var firstClosed = 0
-                for char in newEquation.characters {
-                    if ((counter > lastOpenPar!) && (char == ")")) {
-                        firstClosed = counter
-                    }
-                    counter += 1
-                }
- 
-        let start = newEquation.index(newEquation.startIndex, offsetBy: lastOpenPar!)
-        let end = newEquation.index(newEquation.startIndex, offsetBy: firstClosed)
-        let range = start..<end
-        var subString = newEquation.substring(with: range)
-        
-        var dividedString = subString.components(separatedBy: operation)
-        var total : Double = Double(dividedString[0])!
-        var counter2 = 0
-        */
-        return callAllOp(index: 0)
-        /*
-        var total : Double = 0
-        var counter = 0
-        for variables in dividedString {
-            switch variables {
-                case "+":
-                    
-                case "-":
-                    
-                case "×":
-                    
-                case "÷":
-                
-                case "(":
-                
-                case ")":
-                
-                case "sin":
-                
-                case "cos":
-                
-                case "tan":
-                
-                case "√":
-                
-                default:
-                    total += Double(variables)
-            }
-        }
-        */
-    }
-    
 };
